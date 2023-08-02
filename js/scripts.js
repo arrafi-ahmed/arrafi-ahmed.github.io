@@ -1,133 +1,71 @@
-window.addEventListener('DOMContentLoaded', (event) => {
-  // Navbar shrink function
-  var navbarShrink = function () {
-    const navbarCollapsible = document.body.querySelector('#mainNav')
-    if (!navbarCollapsible) {
-      return
-    }
-    if (window.scrollY === 0) {
-      navbarCollapsible.classList.remove('navbar-shrink')
-    } else {
-      navbarCollapsible.classList.add('navbar-shrink')
-    }
-  }
+/*!
+    * Start Bootstrap - Freelancer v6.0.0 (https://startbootstrap.com/themes/freelancer)
+    * Copyright 2013-2020 Start Bootstrap
+    * Licensed under MIT (https://github.com/BlackrockDigital/startbootstrap-freelancer/blob/master/LICENSE)
+    */
+    document.getElementById("year").innerHTML = new Date().getFullYear().toString();
 
-  // Shrink the navbar
-  navbarShrink()
-
-  // Shrink the navbar when page is scrolled
-  document.addEventListener('scroll', navbarShrink)
-
-  // Activate Bootstrap scrollspy on the main nav element
-  const mainNav = document.body.querySelector('#mainNav')
-  if (mainNav) {
-    new bootstrap.ScrollSpy(document.body, {
-      target: '#mainNav',
-      offset: 72,
-    })
-  }
-
-  // Collapse responsive navbar when toggler is visible
-  const navbarToggler = document.body.querySelector('.navbar-toggler')
-  const responsiveNavItems = [].slice.call(
-    document.querySelectorAll('#navbarResponsive .nav-link')
-  )
-  responsiveNavItems.map(function (responsiveNavItem) {
-    responsiveNavItem.addEventListener('click', () => {
-      if (window.getComputedStyle(navbarToggler).display !== 'none') {
-        navbarToggler.click()
+    (function($) {
+    "use strict"; // Start of use strict
+  
+    // Smooth scrolling using jQuery easing
+    $('a.js-scroll-trigger[href*="#"]:not([href="#"])').click(function() {
+      if (location.pathname.replace(/^\//, '') == this.pathname.replace(/^\//, '') && location.hostname == this.hostname) {
+        var target = $(this.hash);
+        target = target.length ? target : $('[name=' + this.hash.slice(1) + ']');
+        if (target.length) {
+          $('html, body').animate({
+            scrollTop: (target.offset().top - 71)
+          }, 1000, "easeInOutExpo");
+          return false;
+        }
       }
-    })
-  })
-})
-
-//Form handling
-let form = document.getElementById('contactForm')
-
-let cname = form.elements['name']
-let email = form.elements['email']
-let message = form.elements['message']
-
-let inputs = [cname, message]
-let valid = false
-let errors = []
-
-const setError = (alertNode) => {
-  errors.push(alertNode)
-  valid = false
-  alertNode.style.display = 'block'
-}
-const setSuccess = (alertNode) => {
-  valid = true
-  alertNode.style.display = 'none'
-}
-
-const checkEmptyField = (input) => {
-  const alertNode =
-    input.parentNode.getElementsByClassName('invalid-feedback')[0]
-  if (input.value.trim() === '') {
-    setError(alertNode)
-  } else {
-    setSuccess(alertNode)
-  }
-}
-
-inputs.forEach((input) => {
-  input.addEventListener('blur', (e) => {
-    checkEmptyField(e.target)
-  })
-})
-
-email.addEventListener('blur', (e) => {
-  const alertNode =
-    e.target.parentNode.getElementsByClassName('invalid-feedback')[0]
-  if (e.target.value.trim() === '') {
-    setError(alertNode)
-  }
-})
-
-email.addEventListener('input', (e) => {
-  const alertNode =
-    e.target.parentNode.getElementsByClassName('invalid-feedback')[0]
-  const emailRegEx =
-    /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-  const validEmail = emailRegEx.test(e.target.value.trim())
-
-  if (!validEmail) {
-    setError(alertNode)
-  } else {
-    setSuccess(alertNode)
-  }
-})
-
-form.addEventListener('submit', (e) => {
-  e.preventDefault()
-  let inputs = [cname, email, message]
-  inputs.forEach((input) => {
-    checkEmptyField(input)
-  })
-
-  if (valid && errors.length == 0) {
-    const url = 'https://formspree.io/f/xoqybdyk'
-    fetch(url, {
-      method: 'POST',
-      body: JSON.stringify({
-        name: cname.value,
-        email: email.value,
-        message: message.value,
-      }),
-      headers: { 'Content-type': 'application/json; charset=UTF-8' },
-    })
-      .then((response) => {
-        let successNode = document.getElementById('submitSuccessMessage')
-        successNode.classList.remove('d-none')
-      })
-      .catch((err) => {
-        let errorNode = document.getElementById('submitErrorMessage')
-        errorNode.classList.remove('d-none')
-      })
-  } else {
-    e.preventDefault()
-  }
-  errors = []
-})
+    });
+  
+    // Scroll to top button appear
+    $(document).scroll(function() {
+      var scrollDistance = $(this).scrollTop();
+      if (scrollDistance > 100) {
+        $('.scroll-to-top').fadeIn();
+      } else {
+        $('.scroll-to-top').fadeOut();
+      }
+    });
+  
+    // Closes responsive menu when a scroll trigger link is clicked
+    $('.js-scroll-trigger').click(function() {
+      $('.navbar-collapse').collapse('hide');
+    });
+  
+    // Activate scrollspy to add active class to navbar items on scroll
+    $('body').scrollspy({
+      target: '#mainNav',
+      offset: 80
+    });
+  
+    // Collapse Navbar
+    var navbarCollapse = function() {
+      if ($("#mainNav").offset().top > 100) {
+        $("#mainNav").addClass("navbar-shrink");
+      } else {
+        $("#mainNav").removeClass("navbar-shrink");
+      }
+    };
+    // Collapse now if page is not at top
+    navbarCollapse();
+    // Collapse the navbar when page is scrolled
+    $(window).scroll(navbarCollapse);
+  
+    // Floating label headings for the contact form
+    $(function() {
+      $("body").on("input propertychange", ".floating-label-form-group", function(e) {
+        $(this).toggleClass("floating-label-form-group-with-value", !!$(e.target).val());
+      }).on("focus", ".floating-label-form-group", function() {
+        $(this).addClass("floating-label-form-group-with-focus");
+      }).on("blur", ".floating-label-form-group", function() {
+        $(this).removeClass("floating-label-form-group-with-focus");
+      });
+    });
+  
+  })(jQuery); // End of use strict
+  
